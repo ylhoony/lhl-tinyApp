@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+</head>
+<body>
+  <header>
+    <% include ./partials/_header %>
+  </header>
+
+    <div>
+
+      Short URL: <%=shortURL%>
+
+      <form method='post' action='/urls/<%=shortURL%>/update'>
+
+        <input id="longURL" type="text" name="longURL" value='<%=longURL%>' style='width: 300px'>
+
+        <button>Update</button>
+
+      </form>
+
+    </div>
+
+
+
+</body>
+</html>

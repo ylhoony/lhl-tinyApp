@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>TinyApp</title>
+
+  <style>
+    li,
+    p,
+    form {
+        display: inline-block;
+        margin: 0 10px;
+    }
+
+    li {
+      width: 300px;
+
+    }
+
+
+
+
+</style>
+</head>
+<body>
+  <!-- Add EJS code -->
+  <header>
+    <% include ./partials/_header %>
+  </header>
+  <div>
+  <h1>EJS test</h1>
+    <ul>
+      <% for (let prop in urls) { %>
+        <div>
+          <li> <%=prop%> --> <a href=<%=urls[prop]%> target='_blank'><%=urls[prop]%></a></li>
+          <p style='display: inline'><a href='/urls/<%=prop%>'>Edit</a></p>
+          <form method="POST" action="/urls/<%=prop%>/delete">
+            <button>Delete</button>
+          </form>
+        <div>
+      <% } %>
+    </ul>
+
+ </div>
+
+
+</body>
+</html>
