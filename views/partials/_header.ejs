@@ -1,3 +1,20 @@
 <!-- views/partials/header.ejs -->
 
-<h1>Header partial</h1>
+<% if (username === undefined) { %>
+
+  <h1>Login</h1>
+    <form method='post' action='/login'>
+      <label for='username'>Username: </label>
+      <input name='username' type='text' />
+      <button>Sign In</button>
+    </form>
+
+
+<% } else { %>
+
+  <h1>Logout</h1>
+    <form method="post" action='/logout'>
+      <button>Sign Out</button>
+    </form>
+
+<% } %>
