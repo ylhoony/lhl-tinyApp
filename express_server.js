@@ -1,3 +1,5 @@
+'use strict'
+
 const express = require('express');
 const app = express();
 
@@ -38,50 +40,25 @@ app.get('/urls/:id', (req, res) => {
 
 
 app.post('/urls/create', (req, res) => {
-
-  console.log(req.body.longURL);  // debug statement to see POST parameters
-
   let newShortURL = generateRandomString();
   urlDatabase[newShortURL] = req.body.longURL;
-
-  console.log(urlDatabase);
   res.redirect(`http://localhost:8080/urls/${newShortURL}`);
-  // res.end();
-  // res.send("Ok");         // Respond with 'Ok' (we will replace this)
 });
 
-// app.get("/urls.json", (req, res) => {
-//   res.json(urlDatabase);
-// });
-
-// app.get("/hello", (req, res) => {
-//   res.end("<html><body>Hello <b>World</b></body></html>\n");
-// });
-
 app.post("/urls/:id/update", (req, res) => {
-
-
   let shortURL = req.params.id;
   console.log(shortURL);
   console.log(urlDatabase);
-
   urlDatabase[shortURL] = req.body.longURL;
-
   console.log(urlDatabase);
-
   res.redirect('/urls')
-
 });
 
 app.post("/urls/:id/delete", (req, res) => {
-
   let shortURL = req.params.id;
   delete urlDatabase[shortURL];
-
   console.log(urlDatabase);
-
   res.redirect('/urls');
-
 });
 
 app.listen(PORT, () => {
@@ -92,7 +69,6 @@ app.get("/u/:shortURL", (req, res) => {
   let longURL = urlDatabase[req.params.shortURL];
   res.redirect(longURL);
 });
-
 
 function generateRandomString() {
     let text = "";
