@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head></head>
+<% include partials/_header %>
+  <body style="font-size:20px; padding:50px;">
+
+    <h2>Register</h2>
+
+    <form action="/register" method="POST" style="margin:150px;">
+
+      <label for="longURL">E-mail: </label><br>
+        <input id="email" type="email" name="email" placeholder="your@email.com" style="width: 300px"><br>
+
+      <label for="longURL">Password: </label><br>
+        <input id="password" type="password" name="password" placeholder="Password ****" style="width: 300px"><br>
+      <button style="width: 300px">Register</button>
+    </form>
+  </body>
+</html>

@@ -1,18 +1,20 @@
 <!-- views/partials/header.ejs -->
 
-<% if (username === undefined) { %>
-
-  <h1>Login</h1>
-    <form method='post' action='/login'>
-      <label for='username'>Username: </label>
-      <input name='username' type='text' />
+<% if (userId === undefined) { %>
+    <form method='get' action='/login'>
       <button>Sign In</button>
+      or
+    </form>
+    <form method="get" action='/register'>
+      <button>Register</button>
     </form>
 
 
 <% } else { %>
 
   <h1>Logout</h1>
+    Howdy, <%=userEmail%>
+
     <form method="post" action='/logout'>
       <button>Sign Out</button>
     </form>

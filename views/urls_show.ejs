@@ -15,9 +15,11 @@
       <form method='post' action='/urls/<%=shortURL%>/update'>
 
         <input id="longURL" type="text" name="longURL" value='<%=longURL%>' style='width: 300px'>
-
-        <button>Update</button>
-
+        <% if (userId === undefined) { %>
+          <button disabled>Update</button>
+        <% } else { %>
+          <button>Update</button>
+        <% } %>
       </form>
 
     </div>
