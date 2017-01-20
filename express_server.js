@@ -18,7 +18,14 @@ let urlDatabase = {
   '9sm5xK': 'http://www.google.com'
 };
 
-let users = {};
+let users = {
+  // DdGSo7iYuCdkzK6: {
+  //   id: 'DdGSo7iYuCdkzK6',
+  //   email: 'test@test.com',
+  //   password: 'test',
+  //   urlList: {}
+  // }
+};
 
 function generateRandomString() {
     let text = "";
@@ -57,17 +64,20 @@ app.get('/', (req, res) => {
 });
 
 app.get('/urls', (req, res) => {
-  // const userId = req.cookies.user_id;
+  const userId = req.cookies.user_id;
+  if(userId === undefined) {
+    return res.status(401).redirect('/login');
+  } else{
   let templateVars = {
     userId: req.cookies.user_id,
     urls: urlDatabase,
     users: users,
-    userEmail: searchUserEmail(req.cookies.user_id)
-    // userData: users[userId].urlList
+    userEmail: searchUserEmail(req.cookies.user_id),
+    userData: users[userId].urlList
    };
 
-  res.render('urls_index', templateVars);
-
+    res.render('urls_index', templateVars);
+  }
 });
 
 
@@ -179,8 +189,13 @@ app.get('/urls/:id', (req, res) => {
     'users': users,
     userEmail: searchUserEmail(req.cookies.user_id)
   };
+
+  if(req.cookies.user_id === undefined) {
+    return res.status(401).redirect('/login');
+  } else{
   // console.log(req.params.id);
   res.render("urls_show", templateVars);
+  }
 });
 
 
@@ -196,7 +211,7 @@ app.post('/urls/create', (req, res) => {
 
     urlDatabase[newShortURL] = req.body.longURL;
 
-    users[userId].shortURL[newShortURL] = req.body.longURL;
+    users[userId].urlList[newShortURL] = req.body.longURL;
 
     res.redirect(`http://localhost:8080/urls/${newShortURL}`);
 

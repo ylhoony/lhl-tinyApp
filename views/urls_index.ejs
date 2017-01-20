@@ -28,22 +28,20 @@
   </header>
   <div>
     <h1>EJS test</h1>
-      <% if (userID === undefined) { %>
-        <div></div>
-        <% else { %>
+
           <ul>
-            <% for (let prop in urls) { %>
+            <% for (let prop in userData) { %>
             <div>
-                <li> <a href=<%=urls[prop]%> target='_blank'><%=prop%></a></li>
+                <li> <a href=<%=userData[prop]%> target='_blank'><%=prop%></a></li>
                    <p style='display: inline'><a href='/urls/<%=prop%>'>Edit</a></p>
                     <form method="POST" action="/urls/<%=prop%>/delete">
                       <button>Delete</button>
                     </form>
             </div>
-            <% } %>
+          <% } %>
           </ul>
-        <% } %>
-      <% } %>
+
+
  </div>
 
 
