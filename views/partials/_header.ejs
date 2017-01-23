@@ -1,22 +1,11 @@
 <!-- views/partials/header.ejs -->
 
-<% if (userId === undefined) { %>
-    <form method='get' action='/login'>
-      <button>Sign In</button>
-      or
-    </form>
-    <form method="get" action='/register'>
-      <button>Register</button>
-    </form>
-
-
-<% } else { %>
-
-  <h1>Logout</h1>
-    Howdy, <%=userEmail%>
-
+<% if (userId) { %>
+    <p>Howdy, <%=userEmail%></p>
+    <p><a href='/urls'>My Links</a></p>
     <form method="post" action='/logout'>
-      <button>Sign Out</button>
+      <button>logout</button>
     </form>
-
+<% } else { %>
+  <p style='text-align: center;'><a href='./login'>Sign In</a> or <a href='./register'>Register</a> </p>
 <% } %>

@@ -2,23 +2,15 @@
 <html lang="en">
 <head>
   <title>TinyApp</title>
-
   <style>
-    li,
-    p,
-    form {
+    li p,
+    li form {
         display: inline-block;
         margin: 0 10px;
     }
-
     li {
-      width: 300px;
-
+      width: 100px;
     }
-
-
-
-
 </style>
 </head>
 <body>
@@ -26,24 +18,29 @@
   <header>
     <% include ./partials/_header %>
   </header>
-  <div>
-    <h1>EJS test</h1>
+      <p><a href='/urls/new'>Create a New Short Link</a></p>
+          <% for (let prop in userData) { %>
+              <table>
+                <tr style='margin: 0'>
+                  <td style='width: 100px'>
+                    <a href=<%=userData[prop]%> target='_blank'><%=prop%></a>
+                  </td>
 
-          <ul>
-            <% for (let prop in userData) { %>
-            <div>
-                <li> <a href=<%=userData[prop]%> target='_blank'><%=prop%></a></li>
-                   <p style='display: inline'><a href='/urls/<%=prop%>'>Edit</a></p>
+                  <td>
+                    <p style='width: 150px'><%=userData[prop]%></p>
+                  </td>
+
+                  <td style='margin: 0 15%'>
+                    <p><a href='/urls/<%=prop%>'>Edit</a></p>
+                  </td>
+
+                  <td>
                     <form method="POST" action="/urls/<%=prop%>/delete">
-                      <button>Delete</button>
+                      <button style='padding: 0 15%'>Delete</button>
                     </form>
-            </div>
+                  </td>
+                </tr>
+              <table>
           <% } %>
-          </ul>
-
-
- </div>
-
-
 </body>
 </html>
