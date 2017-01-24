@@ -18,7 +18,7 @@ app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/views'));
 
 //port setup
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3000;
 
 let urlDatabase = {};
 
@@ -252,7 +252,7 @@ app.post('/urls/:id/update', (req, res) => {
     return;
   }
 
-
+  urlDatabase[shortURL] = req.body.longURL;
   users[userId].urlList[shortURL] = req.body.longURL;
   res.redirect('/urls');
 
