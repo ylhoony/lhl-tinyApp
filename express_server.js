@@ -1,26 +1,33 @@
 'use strict'
-
+//express setup
 const express = require('express');
 const app = express();
-
+//body-parser setup
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
-
+//bcrypt setup
 const bcrypt = require('bcrypt');
-
+//cookie-session setup
 const cookieSession = require('cookie-session');
 app.use(cookieSession({
   name: 'session',
   keys: ['Testsession']
 }));
-
+//ejs setup
 app.set('view engine', 'ejs');
+app.use(express.static(__dirname + '/views'));
 
+//port setup
 const PORT = process.env.PORT || 8080;
 
 let urlDatabase = {};
 
-let users = {};
+let users = {
+  // 'id' : ,
+  // 'email': ,
+  // 'password': ,
+  // 'urlList': {}
+};
 
 function generateRandomString(num) {
     let text = "";
@@ -93,12 +100,18 @@ app.post('/login', (req, res) => {
   const pwdInput = req.body.password;
   const userId = searchUserId(emailInput);
 
+  if (users.hasOwnProperty()) {
+    res.redirect('/');
+    return;
+  }
+
   for (let item in users) {
     if (users[item].email === emailInput && bcrypt.compareSync(pwdInput, users[item].password)) {
       req.session.user_id = userId;
       res.redirect('/');
     } else {
       res.status(401).send('Invalid User or Password');
+      return;
     }
   }
 });
@@ -135,13 +148,15 @@ app.post('/register', (req, res) => {
 
   for (let item in users) {
     if (users[item].email === emailInput) {
-      return res.status(400).send('email exists already');
+      res.status(400).send('email exists already');
+      return;
     }
   }
 
 // check if email or password is empty
   if (emailInput.trim().length === 0 || pwdInput.trim().length === 0) {
-    return res.status(400).send('Invalid email or password');
+    res.status(400).send('Invalid email or password');
+    return;
   } else { // add user to users object
     users[userRandomId] = {
       'id': userRandomId,
@@ -161,45 +176,44 @@ app.get('/urls/new', (req, res) => {
     'users': users,
     userEmail: searchUserEmail(req.session.user_id)
   };
+
   if(templateVars.userId) {
    res.status(200).render('urls_news', templateVars);
   } else {
-    res.status(401).send("<html>Please <a href='./login'>log in</a>.</html>");
+    res.status(401).redirect('/login');
   }
 });
-
-
 
 app.get('/urls/:id', (req, res) => {
   const shortURL = req.params.id;
   const userId = req.session.user_id;
+
+  if (!userId) {  /* || user id is invalid */
+    res.status(401).redirect('/login');
+    return;
+  } // else...
+
   const keyArr = Object.keys(urlDatabase);
   const userUrlArr = Object.keys(users[userId].urlList);
-
-  function countUrl (urlKey) {
-    return urlKey === shortURL;
-  }
 
   function compareUrl (urlKey) {
     return urlKey === shortURL;
   }
 
-  if (keyArr.filter(countUrl).length === 0) {
+  if (keyArr.filter(compareUrl).length === 0) {
     res.status(404).send("<html>Please input parameter.</html>");
-  } else if (userId === undefined) {
-    res.status(401).redirect('/login');
-  } else if (shortURL !== userUrlArr.filter(compareUrl)[0]) {
+  } else if (shortURL !== userUrlArr.filter(compareUrl)[0]) { // alt - } else if (users[userId].urlList[shortUrl] !== undefined) {
     res.status(403).send("<html>This url is not created by you.</html>");
-  } else{
-    let templateVars = {
-      shortURL: req.params.id,
-      userId: req.session.user_id,
-      'users': users,
-      userEmail: searchUserEmail(req.session.user_id),
-      userData: users[userId].urlList
-    };
-    res.render("urls_show", templateVars);
+    return;
   }
+  let templateVars = {
+    shortURL: req.params.id,
+    userId: req.session.user_id,
+    'users': users,
+    userEmail: searchUserEmail(req.session.user_id),
+    userData: users[userId].urlList
+  };
+  res.render("urls_show", templateVars);
 });
 
 app.post('/urls', (req, res) => {
@@ -211,69 +225,76 @@ app.post('/urls', (req, res) => {
   } else {
     urlDatabase[newShortURL] = req.body.longURL;
     users[userId].urlList[newShortURL] = req.body.longURL;
-    res.redirect(`http://localhost:8080/urls/${newShortURL}`);
+    res.redirect(`/urls/${newShortURL}`);
   }
 });
 
 app.post('/urls/:id/update', (req, res) => {
   const shortURL = req.params.id;
   const userId = req.session.user_id;
+
+  if (!userId) {  /* || user id is invalid */
+    res.status(401).redirect('/login');
+    return;
+  }
+
   const keyArr = Object.keys(urlDatabase);
   const userUrlArr = Object.keys(users[userId].urlList);
-
-  function countUrl (urlKey) {
-    return urlKey === shortURL;
-  }
 
   function compareUrl (urlKey) {
     return urlKey === shortURL;
   }
-  if (keyArr.filter(countUrl).length === 0) {
+
+  if (keyArr.filter(compareUrl).length === 0) {
     res.status(404).send("<html>Please input parameter.</html>");
-  } else if (userId === undefined) {
-    res.status(401).redirect('/login');
   } else if (shortURL !== userUrlArr.filter(compareUrl)[0]) {
     res.status(403).send("<html>This url is not created by you.</html>");
-  } else {
-    users[userId].urlList[shortURL] = req.body.longURL;
-    res.redirect(`/urls/${shortURL}`);
+    return;
   }
+
+
+  users[userId].urlList[shortURL] = req.body.longURL;
+  res.redirect('/urls');
+
 });
 
 app.post("/urls/:id/delete", (req, res) => {
   const shortURL = req.params.id;
   const userId = req.session.user_id;
+
+  if (!userId) {  /* || user id is invalid */
+    res.status(401).redirect('/login');
+    return;
+  }
+
   const keyArr = Object.keys(urlDatabase);
   const userUrlArr = Object.keys(users[userId].urlList);
-
-  function countUrl (urlKey) {
-    return urlKey === shortURL;
-  }
 
   function compareUrl (urlKey) {
     return urlKey === shortURL;
   }
-  if (keyArr.filter(countUrl).length === 0) {
+
+  if (keyArr.filter(compareUrl).length === 0) {
     res.status(404).send("<html>Please input parameter.</html>");
-  } else if (userId === undefined) {
-    res.status(401).redirect('/login');
   } else if (shortURL !== userUrlArr.filter(compareUrl)[0]) {
     res.status(403).send("<html>This url is not created by you.</html>");
-  } else {
-    let userData = users[userId].urlList;
-    delete userData[shortURL];
-    res.redirect(`/urls`);
+    return;
   }
+
+  let userData = users[userId].urlList;
+  delete userData[shortURL];
+  res.redirect(`/urls`);
+
 });
 
 app.get("/u/:id", (req, res) => {
   const shortURL = req.params.id;
-  const userId = req.session.user_id;
-  const userData = users[userId].urlList;
-  const longURL = userData[shortURL];
+  const longURL = urlDatabase[shortURL];
 
-  if (shortURL) {
+  if (shortURL && (longURL.substring(0,7) === 'http://')) {
     res.redirect(longURL);
+  } else if (shortURL && (longURL.substring(0,7) !== 'http://')) {
+    res.redirect('http://' + longURL);
   } else {
     res.status(404).send('No links exists.');
   }

@@ -1,0 +1,23 @@
+body {
+  text-align: center;
+  background-color: #eee;
+}
+
+input,
+button {
+  width: 300px;
+}
+
+#Btn,
+#Btn {
+  width: 50px;
+}
+
+.list {
+  width:50%;
+  margin: 0 auto;
+}
+
+.display {
+  margin-top: 20px;
+}

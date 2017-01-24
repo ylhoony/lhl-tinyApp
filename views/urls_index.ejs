@@ -2,45 +2,36 @@
 <html lang="en">
 <head>
   <title>TinyApp</title>
-  <style>
-    li p,
-    li form {
-        display: inline-block;
-        margin: 0 10px;
-    }
-    li {
-      width: 100px;
-    }
-</style>
+  <link rel="stylesheet" href="./style/style.css" type="text/css">
 </head>
 <body>
   <!-- Add EJS code -->
   <header>
     <% include ./partials/_header %>
   </header>
-      <p><a href='/urls/new'>Create a New Short Link</a></p>
-          <% for (let prop in userData) { %>
-              <table>
-                <tr style='margin: 0'>
-                  <td style='width: 100px'>
-                    <a href=<%=userData[prop]%> target='_blank'><%=prop%></a>
-                  </td>
+      <p><a href="/urls/new">Create a New Short Link</a></p>
+        <% for (let prop in userData) { %>
+          <table class="list">
+            <tr>
+              <td>
+                <a href="/u/<%=[prop]%>" target="_blank"><%=prop%></a>
+              </td>
 
-                  <td>
-                    <p style='width: 150px'><%=userData[prop]%></p>
-                  </td>
+              <td>
+                <p><%=userData[prop]%></p>
+              </td>
 
-                  <td style='margin: 0 15%'>
-                    <p><a href='/urls/<%=prop%>'>Edit</a></p>
-                  </td>
+              <td>
+                <p><a href="/urls/<%=prop%>"">Edit</a></p>
+              </td>
 
-                  <td>
-                    <form method="POST" action="/urls/<%=prop%>/delete">
-                      <button style='padding: 0 15%'>Delete</button>
-                    </form>
-                  </td>
-                </tr>
-              <table>
-          <% } %>
+              <td>
+                <form method="POST" action="/urls/<%=prop%>/delete">
+                  <button id="Btn">Delete</button>
+                </form>
+              </td>
+            </tr>
+          <table>
+        <% } %>
 </body>
 </html>
