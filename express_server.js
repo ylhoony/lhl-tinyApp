@@ -74,7 +74,7 @@ app.get('/urls', (req, res) => {
 
     res.render('urls_index', templateVars);
   } else {
-    return res.status(401).redirect('/login');
+    return res.status(401).send("<html>Please <a href='/login'>login</a>");
   }
 });
 
@@ -180,7 +180,7 @@ app.get('/urls/new', (req, res) => {
   if(templateVars.userId) {
    res.status(200).render('urls_news', templateVars);
   } else {
-    res.status(401).redirect('/login');
+    res.status(401).send("<html>Please <a href='/login'>login</a>");
   }
 });
 
@@ -234,7 +234,7 @@ app.post('/urls/:id/update', (req, res) => {
   const userId = req.session.user_id;
 
   if (!userId) {  /* || user id is invalid */
-    res.status(401).redirect('/login');
+    res.status(401).send("<html>Please <a href='/login'>login</a>");
     return;
   }
 
@@ -263,7 +263,7 @@ app.post("/urls/:id/delete", (req, res) => {
   const userId = req.session.user_id;
 
   if (!userId) {  /* || user id is invalid */
-    res.status(401).redirect('/login');
+    res.status(401).send("<html>Please <a href='/login'>login</a>");
     return;
   }
 
